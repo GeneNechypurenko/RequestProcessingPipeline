@@ -10,6 +10,8 @@ var app = builder.Build();
 
 app.UseSession();   // Добавляем middleware-компонент для работы с сессиями
 
+app.UseFromTenThousandToHundredThousand();
+app.UseFromThousandToTenThousand();
 app.UseFromHundredToThousand();
 // Добавляем middleware-компоненты в конвейер обработки запроса.
 app.UseFromTwentyToHundred();// 20-100

@@ -1,10 +1,10 @@
 ﻿namespace RequestProcessingPipeline
 {
-    public class FromHundredToThousandMiddleware
+    public class FromTenThousandToHundredThousandMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public FromHundredToThousandMiddleware(RequestDelegate next)
+        public FromTenThousandToHundredThousandMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -12,16 +12,15 @@
         public async Task Invoke(HttpContext context)
         {
             string? token = context.Request.Query["number"];
-
             int number = Convert.ToInt32(token);
             number = Math.Abs(number);
-            if (number < 101)
+            if (number < 10001)
             {
                 await _next.Invoke(context);
             }
-            else if (number > 1000)
+            else if (number > 100000)
             {
-                await _next.Invoke(context);
+                await context.Response.WriteAsync("Number is out of range (1-100000)");
             }
             else
             {
@@ -33,6 +32,12 @@
         private string ConvertNumberToWords(int number)
         {
             string toWords = "";
+
+            if ((number / 1000) > 0)
+            {
+                toWords += ConvertNumberToWords(number / 1000) + " thousand ";
+                number %= 1000;
+            }
 
             if ((number / 100) > 0)
             {
